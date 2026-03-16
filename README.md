@@ -41,7 +41,7 @@ SQLite (banco de dados)
 
 ### Subir o projeto
 ```bash
-git clone <seu-repositorio>
+git clone https://github.com/Tadokize/mini-automation-platform.git
 cd mini-automation-platform
 docker compose up --build
 ```
