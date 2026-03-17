@@ -4,20 +4,20 @@ Plataforma simplificada de automação baseada em eventos com suporte a IA.
 
 ## Sobre o projeto
 
-O sistema permite cadastrar regras de automação que são disparadas automaticamente quando eventos chegam. Por exemplo: quando um usuário se cadastra, o sistema pode enviar um email, registrar um log ou processar os dados com IA.
+O sistema permite cadastrar regras de automação que são disparadas automaticamente quando eventos chegam. Por exemplo: quando um usuário se cadastra, o sistema pode registrar um log ou processar os dados com IA.
 
 ## Arquitetura
-
+```
 Cliente HTTP
      ↓
 FastAPI (API REST)
      ↓
 Automation Engine
      ↓
-Actions (log, ai_process, webhook)
+Actions (log, ai_process)
      ↓
 SQLite (banco de dados)
-
+```
 
 ## Design Patterns utilizados
 
@@ -32,7 +32,42 @@ SQLite (banco de dados)
 - SQLAlchemy
 - SQLite
 - Docker
-- Anthropic Claude API
+- Groq AI (LLaMA 3.3 70B)
+
+## Integração com IA
+
+A plataforma utiliza a API do **Groq** com o modelo **LLaMA 3.3 70B** para processar eventos com inteligência artificial.
+
+Quando uma regra tem `action_type: "ai_process"`, o sistema envia o prompt configurado na regra junto com o payload do evento para o modelo de IA, que retorna uma resposta inteligente salva no log de execuções.
+
+### Exemplo real de resposta da IA
+
+Evento recebido:
+```json
+{
+  "event_type": "ticket.created",
+  "payload": {
+    "titulo": "Sistema fora do ar",
+    "descricao": "Todos os usuários estão sem acesso à plataforma desde as 9h"
+  }
+}
+```
+
+Resposta gerada pela IA:
+```
+Prioridade: ALTA
+O sistema está fora do ar e todos os usuários estão sem acesso,
+afetando diretamente a operação. Requer atenção imediata.
+```
+
+### Como configurar
+
+Crie um arquivo `.env` na raiz do projeto:
+```env
+GROQ_API_KEY=sua_chave_aqui
+```
+
+Obtenha sua chave gratuita em: https://console.groq.com
 
 ## Como rodar
 
@@ -80,7 +115,7 @@ POST /rules
 {
   "event_type": "ticket.created",
   "action_type": "ai_process",
-  "action_config": "Classifique a prioridade deste ticket"
+  "action_config": "Classifique a prioridade deste ticket como ALTA, MÉDIA ou BAIXA e explique o motivo em 2 linhas"
 }
 ```
 
@@ -88,10 +123,10 @@ POST /rules
 ```json
 POST /events
 {
-  "event_type": "user.registered",
+  "event_type": "ticket.created",
   "payload": {
-    "name": "João",
-    "email": "joao@email.com"
+    "titulo": "Sistema fora do ar",
+    "descricao": "Todos os usuários estão sem acesso à plataforma desde as 9h"
   }
 }
 ```
