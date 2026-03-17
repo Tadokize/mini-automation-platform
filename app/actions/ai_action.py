@@ -1,17 +1,16 @@
 import os
-import anthropic
+from groq import Groq
 
 def run_ai_action(prompt: str, payload: dict) -> dict:
-    api_key = os.getenv("ANTHROPIC_API_KEY")
-    
+    api_key = os.getenv("GROQ_API_KEY")
+
     if not api_key:
         return {"message": "IA simulada (sem chave configurada)", "prompt": prompt, "payload": payload}
 
-    client = anthropic.Anthropic(api_key=api_key)
+    client = Groq(api_key=api_key)
 
-    message = client.messages.create(
-        model="claude-sonnet-4-20250514",
-        max_tokens=1024,
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
         messages=[
             {
                 "role": "user",
@@ -20,4 +19,4 @@ def run_ai_action(prompt: str, payload: dict) -> dict:
         ]
     )
 
-    return {"response": message.content[0].text}
+    return {"response": response.choices[0].message.content}

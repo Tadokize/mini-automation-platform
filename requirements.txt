@@ -4,3 +4,4 @@ sqlalchemy
 anthropic
 pydantic
 python-dotenv
+groq
