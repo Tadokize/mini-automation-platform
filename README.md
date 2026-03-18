@@ -7,16 +7,32 @@ Plataforma simplificada de automação baseada em eventos com suporte a IA.
 O sistema permite cadastrar regras de automação que são disparadas automaticamente quando eventos chegam. Por exemplo: quando um usuário se cadastra, o sistema pode registrar um log ou processar os dados com IA.
 
 ## Arquitetura
-```
-Cliente HTTP
-     ↓
-FastAPI (API REST)
-     ↓
-Automation Engine
-     ↓
-Actions (log, ai_process)
-     ↓
-SQLite (banco de dados)
+```mermaid
+flowchart TD
+    A[Cliente HTTP] -->|POST /events| B[FastAPI - API REST]
+    A -->|POST /rules| B
+    A -->|GET /executions| B
+
+    B --> C[Event Router]
+    B --> D[Rule Router]
+    B --> E[Execution Router]
+
+    C --> F[Automation Engine]
+    D --> G[(SQLite Database)]
+    E --> G
+
+    F -->|busca regras ativas| G
+    F --> H{action_type}
+
+    H -->|log| I[Log Action]
+    H -->|ai_process| J[AI Action]
+
+    J -->|LLaMA 3.3 70B| K[Groq API]
+
+    I --> L[Execution Log]
+    J --> L
+    K --> L
+    L --> G
 ```
 
 ## Design Patterns utilizados
