@@ -115,7 +115,7 @@ Acesse a documentação em: http://localhost:8000/docs
 
 ## Exemplos de uso
 
-### Criar uma regra de log
+### 1. Criar regra de log
 ```json
 POST /rules
 {
@@ -125,7 +125,19 @@ POST /rules
 }
 ```
 
-### Criar uma regra com IA
+### 2. Disparar evento do log
+```json
+POST /events
+{
+  "event_type": "user.registered",
+  "payload": {
+    "name": "João Silva",
+    "email": "joao@email.com"
+  }
+}
+```
+
+### 3. Criar regra com IA
 ```json
 POST /rules
 {
@@ -135,7 +147,7 @@ POST /rules
 }
 ```
 
-### Disparar um evento
+### 4. Disparar evento da IA
 ```json
 POST /events
 {
@@ -145,4 +157,9 @@ POST /events
     "descricao": "Todos os usuários estão sem acesso à plataforma desde as 9h"
   }
 }
+```
+
+### 5. Ver execuções
+```
+GET /executions
 ```
